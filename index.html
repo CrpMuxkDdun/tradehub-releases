@@ -1,0 +1,653 @@
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeHub Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg1: #111111;
+  --bg2: #161616;
+  --bg3: #1c1c1c;
+  --line: rgba(255,255,255,0.07);
+  --line2: rgba(255,255,255,0.12);
+  --text: #f0f0f0;
+  --text2: #888;
+  --text3: #555;
+  --accent: #c8ff00;
+  --accent-dim: rgba(200,255,0,0.08);
+  --accent-dim2: rgba(200,255,0,0.15);
+  --red: #ff4444;
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --ff: 'Inter', -apple-system, system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--ff);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#333}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid var(--line);background:rgba(10,10,10,0.92);backdrop-filter:blur(20px)}
+.nav-logo{font-size:.95rem;font-weight:600;letter-spacing:-.01em;color:var(--text);text-decoration:none}
+.nav-logo b{color:var(--accent);font-weight:600}
+.nav-menu{display:flex;align-items:center;gap:32px}
+.nav-menu a{font-size:.8rem;color:var(--text2);text-decoration:none;letter-spacing:.02em;transition:color .2s;font-weight:400}
+.nav-menu a:hover{color:var(--text)}
+.nav-cta{font-size:.78rem;font-weight:500;padding:7px 18px;border:1px solid var(--accent);color:var(--accent);border-radius:3px;text-decoration:none;letter-spacing:.04em;transition:all .2s;background:transparent}
+.nav-cta:hover{background:var(--accent);color:#000}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 48px 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 30%, rgba(200,255,0,0.04) 0%, transparent 70%);pointer-events:none}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px, transparent 1px),linear-gradient(90deg, var(--line) 1px, transparent 1px);background-size:80px 80px;opacity:0.4;pointer-events:none;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)}
+.hero-ticker{position:absolute;top:80px;right:48px;display:flex;flex-direction:column;gap:8px;opacity:.7}
+.ticker-row{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:.72rem}
+.ticker-sym{color:var(--text2);width:48px}
+.ticker-price{color:var(--text);font-weight:500}
+.ticker-chg{width:60px;text-align:right}
+.ticker-chg.pos{color:var(--green)}
+.ticker-chg.neg{color:var(--red)}
+
+.hero-label{font-family:var(--mono);font-size:.68rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.hero-label::before{content:'';width:20px;height:1px;background:var(--text3)}
+.hero h1{font-size:clamp(3rem,7vw,6.5rem);font-weight:300;letter-spacing:-.04em;line-height:.97;margin-bottom:32px;max-width:800px}
+.hero h1 em{font-style:normal;color:var(--accent);font-weight:400}
+.hero-sub{font-size:.95rem;color:var(--text2);max-width:460px;line-height:1.7;margin-bottom:52px;font-weight:300}
+.hero-actions{display:flex;align-items:center;gap:0}
+.hero-btn-primary{font-size:.8rem;font-weight:500;padding:13px 28px;background:var(--accent);color:#000;border:none;border-radius:3px 0 0 3px;cursor:pointer;letter-spacing:.04em;text-decoration:none;transition:opacity .2s;display:inline-block}
+.hero-btn-primary:hover{opacity:.88}
+.hero-btn-secondary{font-size:.8rem;font-weight:400;padding:13px 24px;background:transparent;color:var(--text2);border:1px solid var(--line2);border-left:none;cursor:pointer;letter-spacing:.04em;text-decoration:none;transition:all .2s;display:inline-block}
+.hero-btn-secondary:hover{color:var(--text);border-color:rgba(255,255,255,0.25)}
+.hero-btn-sep{width:1px;height:44px;background:var(--line2)}
+
+.hero-metrics{position:absolute;bottom:80px;right:48px;display:flex;gap:1px;background:var(--line)}
+.hm{background:var(--bg1);padding:16px 24px;display:flex;flex-direction:column;gap:4px}
+.hm-val{font-family:var(--mono);font-size:1.3rem;font-weight:500;color:var(--text)}
+.hm-lbl{font-size:.68rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+
+/* MARQUEE */
+.marquee-wrap{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;overflow:hidden;background:var(--bg1)}
+.marquee-track{display:flex;gap:48px;white-space:nowrap;animation:marquee 30s linear infinite}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-item{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.73rem}
+.mi-sym{color:var(--text3);width:52px}
+.mi-price{color:var(--text)}
+.mi-chg{color:var(--green)}
+.mi-chg.d{color:var(--red)}
+.mi-sep{width:1px;height:12px;background:var(--line2);margin:0 12px}
+
+/* SECTION BASE */
+.s{padding:96px 48px;max-width:1200px;margin:0 auto}
+.s-label{font-family:var(--mono);font-size:.67rem;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.s-label::before{content:'';width:16px;height:1px;background:var(--accent)}
+.s-title{font-size:clamp(1.8rem,3.5vw,3rem);font-weight:300;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px}
+.s-sub{font-size:.9rem;color:var(--text2);line-height:1.75;max-width:480px;margin-bottom:64px;font-weight:300}
+.divider{height:1px;background:var(--line);max-width:100%;margin:0 48px}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.about-left{background:var(--bg1);padding:56px;display:flex;flex-direction:column;justify-content:space-between}
+.about-right{background:var(--bg2);padding:0}
+.philosophy-text{font-size:.88rem;color:var(--text2);line-height:1.8;font-weight:300;margin-bottom:32px}
+.philosophy-text em{font-style:normal;color:var(--text);font-weight:400}
+.spec-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.spec-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);font-size:.8rem}
+.spec-key{color:var(--text3);font-family:var(--mono);font-size:.72rem;letter-spacing:.04em}
+.spec-val{font-family:var(--mono);font-weight:500}
+.spec-val.g{color:var(--green)}.spec-val.r{color:var(--red)}.spec-val.b{color:var(--blue)}.spec-val.a{color:var(--accent)}.spec-val.gold{color:#f59e0b}
+
+.data-panel{height:100%;display:flex;flex-direction:column}
+.dp-header{padding:20px 28px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.dp-title{font-family:var(--mono);font-size:.67rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.dp-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.67rem;color:var(--green)}
+.dp-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.dp-rows{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 28px}
+.dp-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);font-size:.82rem}
+.dp-row:last-child{border-bottom:none}
+.dp-key{color:var(--text2);font-family:var(--mono);font-size:.73rem}
+.dp-val{font-family:var(--mono);font-weight:500}
+
+/* FEATURES */
+.feat-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+.feat-card{background:var(--bg1);padding:40px 36px;transition:background .2s;position:relative;cursor:default}
+.feat-card:hover{background:var(--bg2)}
+.feat-num{font-family:var(--mono);font-size:.67rem;color:var(--text3);letter-spacing:.1em;margin-bottom:28px}
+.feat-icon{width:36px;height:36px;margin-bottom:20px;display:flex;align-items:center;justify-content:center}
+.feat-icon svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.feat-name{font-size:.95rem;font-weight:500;margin-bottom:12px;letter-spacing:-.01em}
+.feat-desc{font-size:.8rem;color:var(--text2);line-height:1.72;font-weight:300}
+.feat-tags{margin-top:20px;display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:.64rem;padding:3px 10px;border-radius:2px;border:1px solid var(--line2);color:var(--text3);letter-spacing:.04em}
+.chip.ac{border-color:rgba(200,255,0,.2);color:var(--accent);background:rgba(200,255,0,.04)}
+
+/* ANALYTICS 2-COL */
+.analytics-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.an-left{background:var(--bg1);padding:52px}
+.an-right{background:var(--bg2);padding:52px}
+.an-h{font-size:1.5rem;font-weight:300;letter-spacing:-.025em;margin-bottom:14px}
+.an-p{font-size:.82rem;color:var(--text2);line-height:1.75;margin-bottom:32px;font-weight:300}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.kpi{background:var(--bg2);padding:20px;display:flex;flex-direction:column;gap:6px}
+.kpi-lbl{font-family:var(--mono);font-size:.64rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.kpi-val{font-family:var(--mono);font-size:1.6rem;font-weight:500;letter-spacing:-.02em}
+.kpi-sub{font-size:.7rem;color:var(--text3)}
+
+.month-chart{display:flex;flex-direction:column;gap:0}
+.month-row{display:flex;align-items:center;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
+.month-row:last-child{border-bottom:none}
+.month-label{font-family:var(--mono);font-size:.7rem;color:var(--text3);width:60px}
+.month-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.month-bar{height:100%;border-radius:2px;transition:width .4s}
+.month-bar.pos{background:var(--green)}
+.month-bar.neg{background:var(--red)}
+.month-val{font-family:var(--mono);font-size:.7rem;font-weight:500;width:52px;text-align:right}
+.month-val.pos{color:var(--green)}.month-val.neg{color:var(--red)}
+
+/* RISK */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.risk-steps{display:flex;flex-direction:column;gap:0;margin-top:24px;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.risk-step{display:flex;align-items:flex-start;gap:20px;padding:20px 24px;border-bottom:1px solid var(--line);background:var(--bg1)}
+.risk-step:last-child{border-bottom:none}
+.rs-n{font-family:var(--mono);font-size:.7rem;color:var(--accent);padding-top:2px;width:20px;flex-shrink:0}
+.rs-t{font-size:.82rem;color:var(--text2);line-height:1.6;font-weight:300}
+.calc-box{background:var(--bg1);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.calc-head{padding:16px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.calc-head-title{font-family:var(--mono);font-size:.67rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.calc-head-tag{font-family:var(--mono);font-size:.64rem;color:var(--accent);border:1px solid rgba(200,255,0,.2);padding:2px 8px;border-radius:2px}
+.calc-body{padding:0 24px}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);font-size:.8rem}
+.calc-row:last-child{border-bottom:none}
+.cr-k{color:var(--text3);font-family:var(--mono);font-size:.72rem}
+.cr-v{font-family:var(--mono);font-weight:500;color:var(--text)}
+.calc-result{padding:20px 24px;border-top:1px solid var(--line2);background:rgba(200,255,0,.04);display:flex;justify-content:space-between;align-items:center}
+.calc-result-label{font-family:var(--mono);font-size:.72rem;color:var(--accent)}
+.calc-result-val{font-family:var(--mono);font-size:1.4rem;font-weight:500;color:var(--accent)}
+
+/* COMPARE */
+.compare-section{background:var(--bg1);padding:96px 48px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.compare-inner{max-width:900px;margin:0 auto}
+.cmp-table{width:100%;border-collapse:collapse;margin-top:48px;border:1px solid var(--line)}
+.cmp-table th{padding:12px 20px;font-family:var(--mono);font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;text-align:left;border-bottom:1px solid var(--line);font-weight:400;color:var(--text3)}
+.cmp-table th:nth-child(2){text-align:center;color:var(--text3)}
+.cmp-table th:nth-child(3){text-align:center;color:var(--accent)}
+.cmp-table td{padding:11px 20px;font-size:.8rem;border-bottom:1px solid var(--line);color:var(--text2);font-weight:300}
+.cmp-table td:nth-child(2),.cmp-table td:nth-child(3){text-align:center;font-size:.85rem}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:hover td{background:rgba(255,255,255,.02)}
+.cmp-price{color:var(--accent);font-family:var(--mono);font-weight:500}
+
+/* TRIAL */
+.trial-section{padding:96px 48px}
+.trial-inner{max-width:1100px;margin:0 auto}
+.trial-hero{border:1px solid var(--line);border-radius:4px;padding:64px;display:grid;grid-template-columns:1fr 1.2fr;gap:80px;align-items:center;background:var(--bg1);margin-bottom:24px}
+.th-left h2{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:300;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px}
+.th-left h2 em{font-style:normal;color:var(--accent)}
+.th-left p{font-size:.85rem;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:32px}
+.trial-cta{display:inline-flex;align-items:center;gap:10px;font-size:.8rem;font-weight:500;padding:12px 24px;background:var(--accent);color:#000;border:none;border-radius:3px;text-decoration:none;letter-spacing:.04em;cursor:pointer;transition:opacity .2s}
+.trial-cta:hover{opacity:.88}
+.warn-pill{margin-top:16px;display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.67rem;color:var(--red);border:1px solid rgba(255,68,68,.2);padding:6px 14px;border-radius:2px}
+
+.steps-list{display:flex;flex-direction:column;gap:1px;background:var(--line)}
+.step-item{background:var(--bg2);padding:22px 28px;display:flex;gap:20px;align-items:flex-start}
+.step-n{font-family:var(--mono);font-size:.67rem;color:var(--accent);padding-top:3px;flex-shrink:0}
+.step-body{}
+.step-title{font-size:.88rem;font-weight:500;margin-bottom:4px;letter-spacing:-.01em}
+.step-desc{font-size:.78rem;color:var(--text2);line-height:1.6;font-weight:300}
+
+/* PLATFORM */
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:0}
+.plat-card{background:var(--bg1);padding:36px;display:flex;gap:20px;align-items:flex-start;transition:background .2s;border:1px solid transparent}
+.plat-card:hover{background:var(--bg2)}
+.plat-ic{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;opacity:.8}
+.plat-body h4{font-size:.92rem;font-weight:500;margin-bottom:6px;letter-spacing:-.01em}
+.plat-body p{font-size:.78rem;color:var(--text2);margin-bottom:16px;line-height:1.55;font-weight:300}
+.plat-dl{display:inline-flex;align-items:center;gap:7px;font-size:.75rem;font-weight:500;padding:8px 16px;border:1px solid var(--line2);color:var(--text);text-decoration:none;border-radius:3px;letter-spacing:.04em;transition:all .2s}
+.plat-dl:hover{border-color:var(--accent);color:var(--accent)}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:48px}
+.price-card{background:var(--bg1);padding:40px 36px;position:relative;display:flex;flex-direction:column}
+.price-card.featured{background:rgba(200,255,0,.03)}
+.price-badge{font-family:var(--mono);font-size:.62rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:20px;display:block}
+.price-name{font-size:.95rem;font-weight:500;letter-spacing:-.01em;margin-bottom:28px}
+.price-strike{font-family:var(--mono);font-size:.72rem;color:var(--text3);text-decoration:line-through;margin-bottom:4px}
+.price-main{font-family:var(--mono);font-size:2.4rem;font-weight:500;color:var(--text);letter-spacing:-.04em;line-height:1}
+.price-main span{font-size:.9rem;font-weight:400;color:var(--text2)}
+.price-per{font-size:.75rem;color:var(--text3);margin-top:6px;margin-bottom:20px;font-weight:300}
+.price-save{font-family:var(--mono);font-size:.65rem;color:var(--green);margin-bottom:32px}
+.price-btn{display:block;text-align:center;padding:11px;border:1px solid var(--line2);color:var(--text);font-size:.78rem;font-weight:500;text-decoration:none;letter-spacing:.04em;transition:all .2s;border-radius:3px;margin-top:auto}
+.price-btn:hover{border-color:var(--line2);background:rgba(255,255,255,.04)}
+.price-btn.featured-btn{background:var(--accent);color:#000;border-color:var(--accent)}
+.price-btn.featured-btn:hover{opacity:.88}
+.price-note{text-align:center;font-family:var(--mono);font-size:.68rem;color:var(--text3);margin-top:20px;letter-spacing:.04em}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:56px 48px 40px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.8fr 1fr 1fr;gap:64px;margin-bottom:48px}
+.footer-logo{font-size:.95rem;font-weight:600;letter-spacing:-.01em;color:var(--text);margin-bottom:14px;display:block}
+.footer-logo b{color:var(--accent);font-weight:600}
+.footer-brand p{font-size:.78rem;color:var(--text3);line-height:1.72;font-weight:300;max-width:280px}
+.footer-col h5{font-size:.72rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);margin-bottom:16px;font-weight:400}
+.footer-col a{display:block;color:var(--text2);text-decoration:none;font-size:.8rem;margin-bottom:10px;transition:color .2s;font-weight:300}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{border-top:1px solid var(--line);padding-top:24px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.footer-copy{font-family:var(--mono);font-size:.68rem;color:var(--text3)}
+.footer-disc{font-size:.72rem;color:var(--text3);max-width:480px;line-height:1.65;font-weight:300}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.reveal.vis{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .nav{padding:0 20px}.hero{padding:0 20px 64px}
+  .hero h1{font-size:2.8rem}
+  .hero-ticker,.hero-metrics{display:none}
+  .s{padding:64px 20px}
+  .about-grid,.analytics-wrap,.risk-grid,.platform-grid,.footer-top{grid-template-columns:1fr}
+  .feat-grid{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .trial-hero{grid-template-columns:1fr;padding:36px 24px;gap:40px}
+  .compare-section{padding:64px 20px}
+  .trial-section{padding:64px 20px}
+  footer{padding:48px 20px 32px}
+  .hero-actions{flex-wrap:wrap}
+  .hero-btn-secondary{border-left:1px solid var(--line2)}
+  .divider{margin:0 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-logo">TradeHub <b>Pro</b></a>
+  <div class="nav-menu">
+    <a href="#features">Features</a>
+    <a href="#analytics">Analytics</a>
+    <a href="#pricing">Pricing</a>
+    <a href="https://t.me/TradeHubPlatform" target="_blank" class="nav-cta">NHẬN KEY →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-ticker">
+    <div class="ticker-row"><span class="ticker-sym">BTC</span><span class="ticker-price">67,420</span><span class="ticker-chg pos">+2.34%</span></div>
+    <div class="ticker-row"><span class="ticker-sym">ETH</span><span class="ticker-price">3,512</span><span class="ticker-chg pos">+1.87%</span></div>
+    <div class="ticker-row"><span class="ticker-sym">SOL</span><span class="ticker-price">174.3</span><span class="ticker-chg neg">-0.62%</span></div>
+    <div class="ticker-row"><span class="ticker-sym">BNB</span><span class="ticker-price">594.8</span><span class="ticker-chg pos">+0.94%</span></div>
+    <div class="ticker-row"><span class="ticker-sym">XRP</span><span class="ticker-price">0.582</span><span class="ticker-chg neg">-1.20%</span></div>
+    <div class="ticker-row"><span class="ticker-sym">ADA</span><span class="ticker-price">0.461</span><span class="ticker-chg pos">+3.11%</span></div>
+  </div>
+
+  <div class="hero-label">Hệ thống giao dịch chuyên nghiệp · Windows &amp; macOS</div>
+  <h1>Trade<br>with <em>precision.</em><br>Not emotion.</h1>
+  <p class="hero-sub">Phân tích chuyên sâu. Nhật ký kỷ luật. Quản trị rủi ro có hệ thống. Dành cho trader nghiêm túc với kết quả.</p>
+  <div class="hero-actions">
+    <a href="https://t.me/TradeHubPlatform" target="_blank" class="hero-btn-primary">NHẬN KEY DÙNG THỬ 7 NGÀY</a>
+    <a href="#features" class="hero-btn-secondary">XEM TÍNH NĂNG</a>
+  </div>
+
+  <div class="hero-metrics">
+    <div class="hm"><div class="hm-val">9</div><div class="hm-lbl">Layouts</div></div>
+    <div class="hm"><div class="hm-val">11</div><div class="hm-lbl">Timeframes</div></div>
+    <div class="hm"><div class="hm-val">∞</div><div class="hm-lbl">Alerts</div></div>
+    <div class="hm"><div class="hm-val">7D</div><div class="hm-lbl">Free Trial</div></div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="mi-sym">BTC/USDT</span><span class="mi-price">67,420.50</span><span class="mi-chg">+2.34%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">ETH/USDT</span><span class="mi-price">3,512.80</span><span class="mi-chg">+1.87%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">SOL/USDT</span><span class="mi-price">174.30</span><span class="mi-chg d">-0.62%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">BNB/USDT</span><span class="mi-price">594.80</span><span class="mi-chg">+0.94%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">XRP/USDT</span><span class="mi-price">0.5820</span><span class="mi-chg d">-1.20%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">ADA/USDT</span><span class="mi-price">0.4610</span><span class="mi-chg">+3.11%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">AVAX/USDT</span><span class="mi-price">37.42</span><span class="mi-chg">+4.20%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">DOT/USDT</span><span class="mi-price">8.142</span><span class="mi-chg d">-0.33%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">LINK/USDT</span><span class="mi-price">15.67</span><span class="mi-chg">+2.08%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">MATIC/USDT</span><span class="mi-price">0.892</span><span class="mi-chg d">-1.55%</span></div><span class="mi-sep"></span>
+    <!-- duplicate for seamless loop -->
+    <div class="marquee-item"><span class="mi-sym">BTC/USDT</span><span class="mi-price">67,420.50</span><span class="mi-chg">+2.34%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">ETH/USDT</span><span class="mi-price">3,512.80</span><span class="mi-chg">+1.87%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">SOL/USDT</span><span class="mi-price">174.30</span><span class="mi-chg d">-0.62%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">BNB/USDT</span><span class="mi-price">594.80</span><span class="mi-chg">+0.94%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">XRP/USDT</span><span class="mi-price">0.5820</span><span class="mi-chg d">-1.20%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">ADA/USDT</span><span class="mi-price">0.4610</span><span class="mi-chg">+3.11%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">AVAX/USDT</span><span class="mi-price">37.42</span><span class="mi-chg">+4.20%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">DOT/USDT</span><span class="mi-price">8.142</span><span class="mi-chg d">-0.33%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">LINK/USDT</span><span class="mi-price">15.67</span><span class="mi-chg">+2.08%</span></div><span class="mi-sep"></span>
+    <div class="marquee-item"><span class="mi-sym">MATIC/USDT</span><span class="mi-price">0.892</span><span class="mi-chg d">-1.55%</span></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="s reveal">
+  <div class="s-label">Về TradeHub Pro</div>
+  <div class="about-grid">
+    <div class="about-left">
+      <div>
+        <h2 style="font-size:1.6rem;font-weight:300;letter-spacing:-.03em;line-height:1.2;margin-bottom:20px">Không phải bảng điện tử.<br>Một hệ thống tư duy.</h2>
+        <p class="philosophy-text">TradeHub Pro được xây dựng với triết lý duy nhất: <em>dữ liệu thực quyết định kết quả thực.</em> Mỗi lệnh bạn đặt, mỗi chiến thuật bạn dùng đều được ghi lại và phân tích thành insight có giá trị.</p>
+        <p class="philosophy-text">Tập trung vào <em>BTC và Top 10 Market Cap</em> — không phải vì giới hạn, mà vì đó là nơi cơ hội tốt nhất tồn tại. Chất lượng hơn số lượng.</p>
+      </div>
+      <div class="spec-list">
+        <div class="spec-row"><span class="spec-key">PLATFORM</span><span class="spec-val a">Windows · macOS</span></div>
+        <div class="spec-row"><span class="spec-key">DATA FEED</span><span class="spec-val g">Real-time</span></div>
+        <div class="spec-row"><span class="spec-key">TRIAL</span><span class="spec-val">7 ngày đầy đủ</span></div>
+        <div class="spec-row"><span class="spec-key">SUPPORT</span><span class="spec-val">Tiếng Việt 24/7</span></div>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="data-panel">
+        <div class="dp-header">
+          <span class="dp-title">Portfolio Overview · May 2026</span>
+          <span class="dp-status"><span class="dp-dot"></span>Live</span>
+        </div>
+        <div class="dp-rows">
+          <div class="dp-row"><span class="dp-key">TOTAL TRADES</span><span class="dp-val" style="color:var(--blue)">47</span></div>
+          <div class="dp-row"><span class="dp-key">WIN RATE</span><span class="dp-val" style="color:var(--green)">62.4%</span></div>
+          <div class="dp-row"><span class="dp-key">PROFIT FACTOR</span><span class="dp-val" style="color:var(--green)">1.87</span></div>
+          <div class="dp-row"><span class="dp-key">MAX DRAWDOWN</span><span class="dp-val" style="color:var(--red)">-8.3%</span></div>
+          <div class="dp-row"><span class="dp-key">MTD RETURN</span><span class="dp-val" style="color:var(--green)">+14.2%</span></div>
+          <div class="dp-row"><span class="dp-key">BEST STRATEGY</span><span class="dp-val" style="color:#f59e0b">Trend Following</span></div>
+          <div class="dp-row"><span class="dp-key">SHARPE RATIO</span><span class="dp-val" style="color:var(--green)">2.14</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="s reveal" id="features">
+  <div class="s-label">Tính năng</div>
+  <h2 class="s-title">Công cụ của<br>trader nghiêm túc.</h2>
+  <p class="s-sub">Mọi tính năng được thiết kế để phục vụ một mục tiêu: quyết định giao dịch tốt hơn, liên tục.</p>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-num">01</div>
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="feat-name">Multi-Chart Analysis</div>
+      <div class="feat-desc">9 layout đa biểu đồ. Timeframe H4/H8/H12/3D hoàn toàn miễn phí. Đồng bộ vùng giá và cặp tiền theo thời gian thực.</div>
+      <div class="feat-tags"><span class="chip ac">H4/H8/H12/3D</span><span class="chip">Sync All Charts</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">02</div>
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div class="feat-name">Trading Journal</div>
+      <div class="feat-desc">Ghi chép lý do vào lệnh, chiến thuật, SL/TP thực tế vs kế hoạch. Phân loại theo Scalp, Breakout, Trend, Reversal.</div>
+      <div class="feat-tags"><span class="chip ac">Import MT5</span><span class="chip ac">Export PDF</span><span class="chip">Strategy Tags</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">03</div>
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div class="feat-name">Market Screener</div>
+      <div class="feat-desc">Quét thị trường theo Volume bất thường, RSI quá mua/bán, biên độ biến động và trạng thái xu hướng Uptrend/Downtrend/Sideways.</div>
+      <div class="feat-tags"><span class="chip">RSI Filter</span><span class="chip">Volume Scan</span><span class="chip">Trend State</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">04</div>
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </div>
+      <div class="feat-name">Spot Portfolio</div>
+      <div class="feat-desc">Tự động tính P&amp;L theo giá thực tế cho danh mục HODL. Dashboard tổng quan với allocation và hiệu suất từng vị thế.</div>
+      <div class="feat-tags"><span class="chip">Auto P&amp;L</span><span class="chip">Live Price</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">05</div>
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="feat-name">Unlimited Price Alerts</div>
+      <div class="feat-desc">Thông báo tức thì trên desktop khi giá chạm ngưỡng. Không giới hạn số lượng alert — tính năng mà TradingView tính phí thêm.</div>
+      <div class="feat-tags"><span class="chip ac">∞ No Limit</span><span class="chip">Desktop Push</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">06</div>
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="feat-name">JBD Line — Proprietary</div>
+      <div class="feat-desc">Chỉ báo độc quyền từ phương pháp JBD. Tích hợp RSI (9/45), MA 50/200, BB, VWAP, MACD, Fear &amp; Greed, BTC Dominance, OI.</div>
+      <div class="feat-tags"><span class="chip ac">Exclusive</span><span class="chip">F&amp;G · OI · Dom</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ANALYTICS -->
+<div class="s reveal" id="analytics">
+  <div class="s-label">Phân tích hiệu suất</div>
+  <h2 class="s-title">Biết mình thắng thua.<br>Hiểu tại sao.</h2>
+  <div class="analytics-wrap">
+    <div class="an-left">
+      <div class="an-h">Performance Report</div>
+      <p class="an-p">Hệ thống tự tổng hợp lịch sử giao dịch thành các chỉ số then chốt. Báo cáo theo tháng, theo chiến thuật, theo cặp coin — để bạn biết đâu là điểm mạnh cần khai thác, đâu là điểm yếu cần loại bỏ.</p>
+      <div class="kpi-grid">
+        <div class="kpi"><span class="kpi-lbl">Profit Factor</span><span class="kpi-val" style="color:var(--green)">1.87</span><span class="kpi-sub">Target &gt; 1.5</span></div>
+        <div class="kpi"><span class="kpi-lbl">Win Rate</span><span class="kpi-val" style="color:var(--blue)">62.4%</span><span class="kpi-sub">47 trades</span></div>
+        <div class="kpi"><span class="kpi-lbl">Max Drawdown</span><span class="kpi-val" style="color:var(--red)">-8.3%</span><span class="kpi-sub">Peak to trough</span></div>
+        <div class="kpi"><span class="kpi-lbl">Best Streak</span><span class="kpi-val" style="color:#f59e0b">7W</span><span class="kpi-sub">Consecutive wins</span></div>
+      </div>
+    </div>
+    <div class="an-right">
+      <div class="an-h" style="font-size:1rem;font-family:var(--mono);font-size:.72rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:28px">Monthly Returns · 2026</div>
+      <div class="month-chart">
+        <div class="month-row"><span class="month-label">JAN</span><div class="month-bar-wrap"><div class="month-bar pos" style="width:78%"></div></div><span class="month-val pos">+18.4%</span></div>
+        <div class="month-row"><span class="month-label">FEB</span><div class="month-bar-wrap"><div class="month-bar neg" style="width:17%"></div></div><span class="month-val neg">-4.1%</span></div>
+        <div class="month-row"><span class="month-label">MAR</span><div class="month-bar-wrap"><div class="month-bar pos" style="width:50%"></div></div><span class="month-val pos">+11.7%</span></div>
+        <div class="month-row"><span class="month-label">APR</span><div class="month-bar-wrap"><div class="month-bar pos" style="width:98%"></div></div><span class="month-val pos">+23.1%</span></div>
+        <div class="month-row"><span class="month-label">MAY</span><div class="month-bar-wrap"><div class="month-bar pos" style="width:40%"></div></div><span class="month-val pos">+9.3%</span></div>
+      </div>
+      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--line)">
+        <div style="font-family:var(--mono);font-size:.67rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">Best by strategy</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.75rem"><span style="color:var(--text2)">Trend Following</span><span style="color:var(--green)">WR 68% · PF 2.1</span></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.75rem"><span style="color:var(--text2)">Breakout</span><span style="color:var(--green)">WR 71% · PF 1.9</span></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.75rem"><span style="color:var(--text2)">Scalp</span><span style="color:var(--text3)">WR 55% · PF 1.3</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- RISK -->
+<div class="s reveal">
+  <div class="s-label">Risk Management</div>
+  <h2 class="s-title">Size đúng.<br>Risk đúng. Ngủ ngon.</h2>
+  <div class="risk-grid">
+    <div>
+      <p style="font-size:.85rem;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:28px">Loại bỏ cảm xúc và đoán mò khỏi quá trình vào lệnh. Risk Calculator tính toán khối lượng lệnh chính xác dựa trên vốn, mức rủi ro và điểm SL của bạn.</p>
+      <div class="risk-steps">
+        <div class="risk-step"><span class="rs-n">01</span><span class="rs-t">Nhập tổng vốn tài khoản</span></div>
+        <div class="risk-step"><span class="rs-n">02</span><span class="rs-t">Chọn % rủi ro tối đa cho lệnh (khuyến nghị 2–5%)</span></div>
+        <div class="risk-step"><span class="rs-n">03</span><span class="rs-t">Nhập giá vào lệnh và điểm Stop Loss</span></div>
+        <div class="risk-step"><span class="rs-n">04</span><span class="rs-t">Hệ thống output khối lượng và đòn bẩy tối ưu</span></div>
+      </div>
+    </div>
+    <div class="calc-box">
+      <div class="calc-head">
+        <span class="calc-head-title">Risk Calculator</span>
+        <span class="calc-head-tag">Example</span>
+      </div>
+      <div class="calc-body">
+        <div class="calc-row"><span class="cr-k">ACCOUNT SIZE</span><span class="cr-v">$10,000</span></div>
+        <div class="calc-row"><span class="cr-k">RISK %</span><span class="cr-v">2.00%</span></div>
+        <div class="calc-row"><span class="cr-k">ENTRY</span><span class="cr-v">$65,200</span></div>
+        <div class="calc-row"><span class="cr-k">STOP LOSS</span><span class="cr-v" style="color:var(--red)">$63,800</span></div>
+        <div class="calc-row"><span class="cr-k">MAX RISK</span><span class="cr-v" style="color:var(--red)">$200</span></div>
+        <div class="calc-row"><span class="cr-k">LEVERAGE</span><span class="cr-v">5×</span></div>
+      </div>
+      <div class="calc-result">
+        <span class="calc-result-label">POSITION SIZE</span>
+        <span class="calc-result-val">0.143 BTC</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<div class="compare-section reveal">
+  <div class="compare-inner">
+    <div class="s-label">So sánh</div>
+    <h2 class="s-title">TradeHub Pro vs TradingView</h2>
+    <table class="cmp-table">
+      <thead>
+        <tr><th style="width:50%">Tính năng</th><th>TradingView</th><th>TradeHub Pro</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Biểu đồ realtime BTC &amp; Top 10</td><td>✓</td><td>✓</td></tr>
+        <tr><td>H4 / H8 / H12 / 3D miễn phí</td><td style="color:var(--text3)">Paid only</td><td style="color:var(--accent)">✓ Free</td></tr>
+        <tr><td>9 layout đa biểu đồ</td><td style="color:var(--text3)">Pro+ plan</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>RSI + EMA tích hợp</td><td style="color:var(--text3)">Paid only</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>Unlimited price alerts</td><td style="color:var(--text3)">Extra fee</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>Trading Journal</td><td style="color:var(--text3)">✗</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>Import MT5 / Export PDF</td><td style="color:var(--text3)">✗</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>Profit Factor &amp; Drawdown report</td><td style="color:var(--text3)">✗</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>Risk Management Calculator</td><td style="color:var(--text3)">✗</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>Spot Portfolio tracker</td><td style="color:var(--text3)">✗</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>JBD Line — proprietary indicator</td><td style="color:var(--text3)">✗</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td>Hỗ trợ tiếng Việt 24/7</td><td style="color:var(--text3)">✗</td><td style="color:var(--accent)">✓</td></tr>
+        <tr><td style="font-weight:500;color:var(--text)">Giá / tháng</td><td style="color:var(--text2)">300k – 500k</td><td><span class="cmp-price">199k</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TRIAL -->
+<div class="trial-section reveal">
+  <div class="trial-inner">
+    <div class="trial-hero">
+      <div class="th-left">
+        <h2>7 ngày<br>trải nghiệm <em>toàn bộ.</em></h2>
+        <p>100% tính năng. Không giới hạn. Không cần thẻ tín dụng. Key bắt đầu tính thời gian từ lúc bạn kích hoạt — không phải lúc nhận.</p>
+        <a href="https://t.me/TradeHubPlatform" target="_blank" class="trial-cta">NHẬN KEY NGAY →</a>
+        <div><div class="warn-pill">⚠ Nhắn trong nhóm · Không nhắn tin riêng</div></div>
+      </div>
+      <div class="steps-list">
+        <div class="step-item"><span class="step-n">01</span><div class="step-body"><div class="step-title">Vào nhóm Telegram</div><div class="step-desc">Nhắn trong nhóm cộng đồng để nhận mã key dùng thử</div></div></div>
+        <div class="step-item"><span class="step-n">02</span><div class="step-body"><div class="step-title">Tải về và cài đặt</div><div class="step-desc">File .exe cho Windows · file .dmg cho macOS (Intel &amp; Apple Silicon)</div></div></div>
+        <div class="step-item"><span class="step-n">03</span><div class="step-body"><div class="step-title">Kích hoạt key</div><div class="step-desc">Nhập key vào ô kích hoạt — 7 ngày bắt đầu tính từ thời điểm này</div></div></div>
+      </div>
+    </div>
+
+    <!-- PLATFORM -->
+    <div class="s-label" style="margin-bottom:16px">Tải về</div>
+    <div class="platform-grid" style="border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--line);margin-bottom:64px">
+      <div class="plat-card">
+        <div class="plat-ic">⊞</div>
+        <div class="plat-body">
+          <h4>Windows</h4>
+          <p>Windows 10 / 11 · 64-bit<br>Tối ưu màn hình 24–32 inch</p>
+          <a href="https://t.me/TradeHubPlatform" target="_blank" class="plat-dl">↓ Tải file .exe</a>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ic" style="font-size:.9rem;font-family:var(--mono)">⌘</div>
+        <div class="plat-body">
+          <h4>macOS</h4>
+          <p>Intel &amp; Apple Silicon (M1/M2/M3)<br>macOS 11 Big Sur trở lên</p>
+          <a href="https://t.me/TradeHubPlatform" target="_blank" class="plat-dl">↓ Tải file .dmg</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICING -->
+    <div class="s-label" id="pricing" style="margin-bottom:4px">Bảng giá · Ra mắt</div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <span class="price-badge">&nbsp;</span>
+        <div class="price-name">Starter</div>
+        <div class="price-strike">299,000đ</div>
+        <div class="price-main">199<span>k</span></div>
+        <div class="price-per">/ 1 tháng</div>
+        <div class="price-save">→ Tiết kiệm 100k</div>
+        <a href="https://t.me/jbd28" target="_blank" class="price-btn">Mua ngay</a>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Phổ biến nhất</span>
+        <div class="price-name">Standard</div>
+        <div class="price-strike">799,000đ</div>
+        <div class="price-main">499<span>k</span></div>
+        <div class="price-per">/ 3 tháng</div>
+        <div class="price-save">→ Tiết kiệm 300k</div>
+        <a href="https://t.me/jbd28" target="_blank" class="price-btn featured-btn">Mua ngay</a>
+      </div>
+      <div class="price-card">
+        <span class="price-badge">Tiết kiệm nhất</span>
+        <div class="price-name">Pro Annual</div>
+        <div class="price-strike">2,499,000đ</div>
+        <div class="price-main">1.499<span>k</span></div>
+        <div class="price-per">/ 1 năm · ~125k/tháng</div>
+        <div class="price-save">→ Tiết kiệm 1,000k</div>
+        <a href="https://t.me/jbd28" target="_blank" class="price-btn">Mua ngay</a>
+      </div>
+    </div>
+    <div class="price-note">Ưu đãi ra mắt · Chỉ còn 50 suất · Liên hệ @jbd28 · Zalo 0344804416</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">TradeHub <b>Pro</b></a>
+        <p>Hệ thống phân tích và quản lý giao dịch chuyên sâu. Xây dựng bởi trader, dành cho trader Việt Nam. Không tư vấn tài chính.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Download</h5>
+        <a href="https://t.me/TradeHubPlatform" target="_blank">Windows · .exe</a>
+        <a href="https://t.me/TradeHubPlatform" target="_blank">macOS · .dmg</a>
+        <a href="https://t.me/TradeHubPlatform" target="_blank">Hướng dẫn kích hoạt</a>
+      </div>
+      <div class="footer-col">
+        <h5>Community</h5>
+        <a href="https://t.me/TradeHubPlatform" target="_blank">Telegram Group</a>
+        <a href="https://t.me/jbd28trading" target="_blank">Telegram Channel</a>
+        <a href="https://www.facebook.com/jbd28trading" target="_blank">Facebook</a>
+        <a href="https://www.youtube.com/@JBD28Trading" target="_blank">YouTube</a>
+        <a href="https://www.tiktok.com/@jbd.28" target="_blank">TikTok</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 TradeHub Pro by JBD28</div>
+      <div class="footer-disc">⚠ Không tư vấn tài chính. Không cung cấp tín hiệu giao dịch. Mọi quyết định đầu tư là trách nhiệm cá nhân của bạn.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')})},{threshold:.06});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
+HTMLEOF
+echo "done"
